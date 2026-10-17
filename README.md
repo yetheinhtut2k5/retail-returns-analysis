@@ -32,10 +32,10 @@ The raw data is not committed to this repo.
 |---|---|---|
 | Overlapping source sheets | Both Excel sheets cover 1–9 Dec 2010, duplicating 22,523 rows (1,088 invoices, £377,488.45) | Verified identical on row count, invoice count and total value; removed sheet 1's copy |
 | Date format corruption | Excel rewrites dates on CSV export, silently swapping day and month | Loaded dates as text, converted explicitly with `TRY_CONVERT(..., 103)`; raw text retained alongside |
-| Leading whitespace in descriptions | e.g. `" WHITE CHERRY LIGHTS"` — breaks grouping and joins | [TODO: count affected rows] |
+| Leading whitespace in descriptions | 2,571 rows across 37 products, e.g. `" WHITE CHERRY LIGHTS"` — splits one product into two groups when aggregating | Trimmed |
 | Variant stock codes | `79323P` / `79323W` are colour variants of the same base product | [TODO: decide whether to treat as one product or many — document the choice] |
 | Split invoices | Same customer, separate invoices seconds apart | Each invoice counted as one order; noted as a limitation |
-| Missing customer IDs | [TODO: count] | [TODO] |
+| Missing customer IDs | 235,287 rows (22.52%) have no customer ID — loaded as empty strings, which hid them from `IS NULL` checks | Converted to NULL; rows kept, since the transactions are real |
 | No return reason recorded | The data shows *what* was returned, never *why* | Limits the analysis to patterns, not causes |
 
 ## Approach
@@ -45,7 +45,9 @@ The raw data is not committed to this repo.
 3. `03_clean_dates.sql` — date conversion
 4. `04_data_quality.sql` — investigation queries
 5. `05_remove_duplicates.sql` — overlap removal
-
+6. `06_clean_customer_ids.sql` — normalize blank customer IDs to NULL
+7. `07_clean_descriptions.sql` - trim whitespace from product descriptions
+   
 ## Findings
 
 [TODO — the analysis]
@@ -59,8 +61,8 @@ The raw data is not committed to this repo.
 - Data is 2009–2011; patterns may not hold today
 - No return reasons recorded
 - Invoice-level granularity only; no customer demographics
-- Data loading used DBeaver's import wizard, so the column mapping is not
-  captured in version control
+- Data loading used DBeaver's import wizard, so the column mapping is not captured in version control
+- 22.5% of transactions have no customer ID, so customer-level analysis covers roughly 77% of the data
 
 ## Tools
 
