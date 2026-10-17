@@ -6,7 +6,7 @@ CREATE TABLE transactions (
     StockCode nvarchar(20),
     Description nvarchar(255),
     Quantity int,
-    InvoiceDate datetime2,
+    InvoiceDate nvarchar(50),     -- loaded as text, converted below
     Price decimal(10,2),
     CustomerID nvarchar(20),
     Country nvarchar(50),
