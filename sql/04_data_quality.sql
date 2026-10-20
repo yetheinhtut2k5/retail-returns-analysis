@@ -81,3 +81,18 @@ SELECT
 FROM transactions
 WHERE CustomerID = '';
 -- Result: 22.52%
+
+
+--7a. Whitespace in product descriptions
+-- Leading or trailing spaces split one product into two groups
+-- when aggregating, so totals silently come out wrong.
+SELECT 
+	COUNT(*)
+FROM transactions
+WHERE Description <> TRIM(Description)
+
+
+-- 7b. How many product descriptions are affected, not just rows
+SELECT COUNT(DISTINCT TRIM(Description)) AS affected_products
+FROM transactions
+WHERE Description <> TRIM(Description);
