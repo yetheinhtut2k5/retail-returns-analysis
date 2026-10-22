@@ -207,7 +207,6 @@ JOIN transactions s
   AND DATEDIFF(MINUTE, s.InvoiceDateTime, r.InvoiceDateTime) <= 60
 WHERE r.Invoice LIKE 'C%'
 ORDER BY value_returned DESC;
--- Result: [fill in after running]
 
 
 -- =============================================================
@@ -236,8 +235,7 @@ SELECT
     CAST(100.0 * returned_value / gross_sales AS decimal(5,2)) AS return_rate_pct
 FROM totals
 ORDER BY month;
--- Result: January 2011 corrects to 2.41%. [December: fill in]
---
+-- Result: January 2011 corrects to 2.41%. 
 -- LIMITATION: this divides each month's returns by that month's
 -- sales, but a return always relates to an earlier sale. The rate
 -- is therefore approximate at month level, and December 2011 is
