@@ -53,6 +53,7 @@ The raw data is not committed to this repo.
 7. `07_clean_descriptions.sql` — trim whitespace from product descriptions
 8. `08_returns_analysis.sql` — return definition, headline rate, anomaly investigation
 9. `09_return_drivers.sql` — product, order and customer-level drivers
+10. `10_export_for_tableau.sql` — transaction-level extract for the dashboard
 
 ## Findings
 
@@ -141,4 +142,4 @@ problem looks like. The high rates are single orders.
 
 ## Tools
 
-SQL Server 2022 (Docker), DBeaver, Git
+SQL Server 2022 (Docker), DBeaver, Tableau Public, Git
