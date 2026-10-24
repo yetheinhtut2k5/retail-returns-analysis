@@ -49,7 +49,7 @@ The raw data is not committed to this repo.
 3. `03_clean_dates.sql` — date conversion
 4. `04_data_quality.sql` — investigation queries
 5. `05_remove_duplicates.sql` — overlap removal
-6. `06_clean_customer_ids.sql` — normalise blank customer IDs to NULL
+6. `06_clean_customer_ids.sql` — normalize blank customer IDs to NULL
 7. `07_clean_descriptions.sql` — trim whitespace from product descriptions
 8. `08_returns_analysis.sql` — return definition, headline rate, anomaly investigation
 9. `09_return_drivers.sql` — product, order and customer-level drivers
