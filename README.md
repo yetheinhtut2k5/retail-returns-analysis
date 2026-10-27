@@ -2,6 +2,14 @@
 
 SQL analysis of return patterns in a UK online retailer's transaction data.
 
+## Dashboard
+
+[View the interactive dashboard on Tableau Public](https://public.tableau.com/app/profile/ye.thein.htut/viz/RetailReturnsAnalysis_17928784916850/Whatdoreturnscostthisbusiness)
+
+Click a month in the top chart to filter the customer view; filter by country using the dropdown.
+
+![Returns dashboard](docs/dashboard.png)
+
 ## The question
 
 What do returns cost this business, and what drives them?
@@ -49,7 +57,7 @@ The raw data is not committed to this repo.
 3. `03_clean_dates.sql` — date conversion
 4. `04_data_quality.sql` — investigation queries
 5. `05_remove_duplicates.sql` — overlap removal
-6. `06_clean_customer_ids.sql` — normalize blank customer IDs to NULL
+6. `06_clean_customer_ids.sql` — normalise blank customer IDs to NULL
 7. `07_clean_descriptions.sql` — trim whitespace from product descriptions
 8. `08_returns_analysis.sql` — return definition, headline rate, anomaly investigation
 9. `09_return_drivers.sql` — product, order and customer-level drivers
@@ -94,7 +102,7 @@ separate quality problems, and worth under £50 each.
 main driver — three quarters of returned value is partial returns.
 
 **Returns are concentrated in a small number of accounts.** Ten customers
-out of roughly 5,900 account for 28.8% of all returned value (£134,609).
+out of 5,876 account for 28.8% of all returned value (£134,609).
 Within that group, two very different patterns:
 
 | Customer | Bought | Returned | Rate |
@@ -139,6 +147,8 @@ problem looks like. The high rates are single orders.
 - The monthly rate divides each month's returns by that month's sales, but returns relate to earlier sales; month-level figures are therefore approximate
 - December 2011 is a partial month — the data ends on the 9th
 - The 1,000-unit threshold for product return rates is a judgement call; a different cut-off would change which products appear
+- 26 customers show return rates above 100% because their credit notes relate to purchases predating the data window (1 Dec 2009) — £4,200 of returned value, under 1% of the total
+- The dashboard's customer view excludes those 26, customers with no ID, and customers below a £1,000 spend threshold
 
 ## Tools
 

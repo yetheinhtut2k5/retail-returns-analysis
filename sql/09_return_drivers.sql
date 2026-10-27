@@ -90,10 +90,7 @@ ORDER BY InvoiceDateTime;
 -- received and sent back. Two separate orders, both fully returned.
 
 
--- =============================================================
 -- 5. How much of the returned value is whole orders coming back?
--- =============================================================
-
 -- For each customer-product pair, compare units bought with units
 -- returned. Where they match exactly, the customer returned
 -- everything they ever bought of that product.
@@ -141,10 +138,7 @@ FROM summary;
 -- customer ID (~£6,700).
 
 
--- =============================================================
 -- 6. Are returns concentrated in a few customers?
--- =============================================================
-
 WITH customer_totals AS (
     SELECT
         CustomerID,
@@ -204,3 +198,46 @@ SELECT
 FROM ranked;
 -- Result: £134,609 of £467,393 — 28.8% of returned value comes
 -- from 10 customers out of roughly 5,900.
+
+
+-- 8. Why do some customers show return rates above 100%?
+-- The customer scatter showed rates up to 286%, which shouldn't be
+-- possible. NULLIF guards the division for customers who returned
+-- something but bought nothing.
+WITH customer_totals AS (
+    SELECT
+        CustomerID,
+        SUM(CASE WHEN Invoice NOT LIKE 'C%' AND Quantity > 0
+                 THEN Quantity * Price ELSE 0 END)  AS value_bought,
+        ABS(SUM(CASE WHEN Invoice LIKE 'C%'
+                 THEN Quantity * Price ELSE 0 END)) AS value_returned
+    FROM transactions
+    WHERE StockCode NOT IN
+        ('POST','DOT','C2','C3','D','S','M','B','CRUK',
+         'BANK CHARGES','ADJUST','ADJUST2','AMAZONFEE','TEST001')
+      AND Invoice NOT IN ('541431','C541433','581483','C581484')
+      AND CustomerID IS NOT NULL
+    GROUP BY CustomerID
+)
+SELECT
+    CustomerID,
+    value_bought,
+    value_returned,
+    CAST(100.0 * value_returned / NULLIF(value_bought, 0) AS decimal(10,2)) AS return_rate_pct
+FROM customer_totals
+WHERE value_returned > value_bought
+ORDER BY value_returned DESC;
+-- Result: 26 customers, most having bought nothing at all.
+-- Combined value £4,200 — under 1% of returns.
+
+
+-- Checking the largest: did they ever buy anything?
+SELECT Invoice, InvoiceDateTime, StockCode, Quantity, Price
+FROM transactions
+WHERE CustomerID = '14337'
+ORDER BY InvoiceDateTime;
+-- Result: 36 rows, all one credit note (C490942) dated 2009-12-08,
+-- one week after the data begins. No purchases at all.
+-- These are returns against orders placed before the data window,
+-- so the rate has no meaningful denominator. Excluded from the
+-- dashboard's customer view.
